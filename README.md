@@ -1,5 +1,5 @@
 # Bank Sampah Desa
-Bank Sampah adalah aplikasi manajemen transaksi yang memungkinkan pengguna untuk melakukan setoran dan penarikan sampah yang dijual kepada pengepul. Aplikasi ini mendukung otentikasi pengguna dan otorisasi berbasis peran, di mana admin dapat mengelola semua transaksi dan pengguna biasa hanya dapat melihat transaksi mereka sendiri.
+Bank Sampah adalah aplikasi manajemen transaksi yang memungkinkan pengguna untuk melakukan setoran dan penarikan saldo dari sampah yang dijual kepada pengepul. Aplikasi ini mendukung otentikasi pengguna dan otorisasi berbasis peran, di mana admin dapat mengelola semua transaksi dan pengguna biasa hanya dapat melihat transaksi mereka sendiri.
 
 ## Fitur
 - **Otentikasi dan Otorisasi**: Pengguna dapat masuk dan mengakses fitur sesuai dengan peran mereka (admin atau pengguna biasa).
