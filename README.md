@@ -6,6 +6,7 @@ Bank Sampah adalah aplikasi manajemen transaksi yang memungkinkan pengguna untuk
 - **Manajemen Transaksi**: Pengguna dapat melakukan setoran dan penarikan sampah.
 - **Laporan Transaksi**: Admin dapat melihat semua transaksi, sementara pengguna biasa hanya dapat melihat transaksi mereka sendiri.
 - **Filter Transaksi**: Transaksi dapat difilter berdasarkan nama pengguna dan rentang tanggal.
+- **Artikel** : tersedia menu untuk membuat artikel bagi admin agar bisa memberikan info terbaru dan pengumuman penting lainnya.
 
 ## Documentation
 
