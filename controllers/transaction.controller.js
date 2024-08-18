@@ -11,6 +11,11 @@ const getAll = async (req, res) => {
       whereConditions.UserID = req.user.id;
     }
 
+    // Mendapatkan parameter pagination dari query
+    const { page = 1, pageSize = 2 } = req.query;
+    const limit = parseInt(pageSize);
+    const offset = (page - 1) * limit;
+
     // Menghitung jumlah total transaksi
     const totalTransactions = await Transaction.count({
       where: whereConditions,
@@ -35,7 +40,7 @@ const getAll = async (req, res) => {
     // Menghitung saldo
     const balance = totalDeposit - totalWithdrawal;
 
-    // Mendapatkan semua transaksi
+    // Mendapatkan semua transaksi dengan pagination
     const transactions = await Transaction.findAll({
       where: whereConditions,
       include: [
@@ -44,6 +49,8 @@ const getAll = async (req, res) => {
           attributes: ["Name"],
         },
       ],
+      limit,
+      offset,
     });
 
     return res.status(200).json({
@@ -54,6 +61,8 @@ const getAll = async (req, res) => {
       totalDeposit,
       totalWithdrawal,
       balance,
+      currentPage: page,
+      totalPages: Math.ceil(totalTransactions / limit),
     });
   } catch (error) {
     return res.status(500).json({

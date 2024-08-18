@@ -4,7 +4,7 @@ import Transaction from "../models/transaction.model.js";
 
 const report = async (req, res) => {
   try {
-    const { name, startDate, endDate } = req.query;
+    const { name, startDate, endDate, page = 1, pageSize = 10 } = req.query;
 
     // Membuat kondisi where untuk filter
     const whereConditions = {};
@@ -22,10 +22,14 @@ const report = async (req, res) => {
         [Op.between]: [new Date(startDate), adjustedEndDate],
       };
     }
+
     // Jika pengguna bukan admin, tambahkan kondisi untuk hanya melihat transaksi mereka sendiri
     if (req.user.role !== "admin") {
       whereConditions.UserID = req.user.id;
     }
+
+    const limit = parseInt(pageSize);
+    const offset = (page - 1) * limit;
 
     // Menghitung jumlah total transaksi
     const totalTransactions = await Transaction.count({
@@ -72,7 +76,7 @@ const report = async (req, res) => {
     // Menghitung saldo
     const balance = totalDeposit - totalWithdrawal;
 
-    // Mendapatkan semua transaksi
+    // Mendapatkan semua transaksi dengan pagination
     const transactions = await Transaction.findAll({
       where: whereConditions,
       attributes: [
@@ -90,6 +94,8 @@ const report = async (req, res) => {
           attributes: ["Name"],
         },
       ],
+      limit,
+      offset,
     });
 
     return res.status(200).json({
@@ -100,6 +106,8 @@ const report = async (req, res) => {
       totalDeposit,
       totalWithdrawal,
       balance,
+      currentPage: page,
+      totalPages: Math.ceil(totalTransactions / limit),
     });
   } catch (error) {
     return res.status(500).json({
