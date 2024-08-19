@@ -2,6 +2,7 @@ import User from "../models/user.model.js";
 import { registerValidate, updateValidate } from "../utils/validator.js";
 import bcrypt from "bcrypt";
 import xlsx from "xlsx";
+import fs from "fs";
 
 const getAll = async (req, res) => {
   try {
@@ -181,6 +182,13 @@ const uploadUsers = async (req, res) => {
         console.log(`User with email ${userData.Email} already exists.`);
       }
     }
+    fs.unlink(file.path, (err) => {
+      if (err) {
+        console.error("Failed to delete the file:", err);
+      } else {
+        console.log("File deleted successfully.");
+      }
+    });
     res.json({
       message: "File uploaded and processed successfully.",
       uploadedCount,
