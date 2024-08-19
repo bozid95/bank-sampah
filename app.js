@@ -5,6 +5,7 @@ import userRoute from "./routers/user.router.js";
 import transactionRoute from "./routers/transaction.router.js";
 import reportRouter from "./routers/report.router.js";
 import articleRouter from "./routers/article.router.js";
+import { errorHandler } from "./middleware/upload.middleware.js";
 import { Transaction, User, Article } from "./models/index.js";
 
 dotenv.config();
@@ -24,6 +25,9 @@ app.use(
   articleRouter,
   reportRouter
 );
+
+// Error Handling
+app.use(errorHandler);
 
 // Handle 404
 app.all("*", (req, res, next) => {

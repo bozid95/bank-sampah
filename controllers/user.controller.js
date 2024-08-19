@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 import { registerValidate, updateValidate } from "../utils/validator.js";
 import bcrypt from "bcrypt";
+import xlsx from "xlsx";
 
 const getAll = async (req, res) => {
   try {
@@ -142,4 +143,52 @@ const deleteUser = async (req, res) => {
     });
   }
 };
-export { getAll, getOne, createUser, updateUser, deleteUser };
+
+const uploadUsers = async (req, res) => {
+  const file = req.file;
+  if (!file) {
+    return res.status(400).json("No file uploaded.");
+  }
+
+  const workbook = xlsx.readFile(file.path);
+  const sheetName = workbook.SheetNames[0];
+  const sheet = workbook.Sheets[sheetName];
+  const data = xlsx.utils.sheet_to_json(sheet);
+
+  let uploadedCount = 0;
+
+  try {
+    for (const userData of data) {
+      // Pastikan password ada di data user dan merupakan string
+      if (userData.Password && typeof userData.Password === "string") {
+        // Hash password sebelum menyimpan ke database
+        const hashedPassword = await bcrypt.hash(userData.Password, 10);
+        userData.Password = hashedPassword;
+      } else {
+        return res
+          .status(400)
+          .json("Password is required for all users and must be a string.");
+      }
+
+      const [user, created] = await User.findOrCreate({
+        where: { Email: userData.Email }, // Sesuaikan dengan kolom unik di database Anda
+        defaults: userData,
+      });
+
+      if (created) {
+        uploadedCount++;
+      } else {
+        console.log(`User with email ${userData.Email} already exists.`);
+      }
+    }
+    res.json({
+      message: "File uploaded and processed successfully.",
+      uploadedCount,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json("An error occurred while processing the file.");
+  }
+};
+
+export { getAll, getOne, createUser, updateUser, deleteUser, uploadUsers };
